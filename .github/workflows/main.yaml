@@ -1,4 +1,4 @@
-name: Get Sentiment and update GitHub page
+name: Get Courses Rating and Difficulty and update GitHub page
 
 on:
   schedule:
@@ -21,8 +21,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           
-      - name: Execute python script to update sentiment page
-        run: python update_sentiment_page.py
+      - name: Execute python script to update courses page
+        run: python update_page.py
         
       - name: Clone repo from your github.io page and commit newly generated sentiment html file
         run: | #change all the "damianboh"s below to your username

@@ -154,7 +154,6 @@ fig_hist3.update_layout(
 fig_corr = px.imshow(df[['rating', 'difficulty', 'workload']].corr(), text_auto = True, title = 'Correlation')
 
 
-
 # Get current date, time and timezone to print to the html page
 now = datetime.now()
 dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
