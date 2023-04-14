@@ -135,20 +135,21 @@ fig_treemap2.show()
 
 
 # Histogram Plots to Show Distributions of Workload, Rating and Difficulty
-fig_hist1 = px.histogram(df_plot, x='workload', nbins=30, title='Workload Distribution')
-fig_hist1.update_layout(
-    width=800
-)
+# (feel free to uncomment to include these plots)
+# fig_hist1 = px.histogram(df_plot, x='workload', nbins=30, title='Workload Distribution')
+# fig_hist1.update_layout(
+#     width=800
+# )
 
-fig_hist2 = px.histogram(df_plot, x='rating', nbins=30, title='Rating Distribution')
-fig_hist2.update_layout(
-    width=800
-)
+# fig_hist2 = px.histogram(df_plot, x='rating', nbins=30, title='Rating Distribution')
+# fig_hist2.update_layout(
+#     width=800
+# )
 
-fig_hist3 = px.histogram(df_plot, x='difficulty', nbins=30, title='Difficulty Distribution')
-fig_hist3.update_layout(
-    width=800
-)
+# fig_hist3 = px.histogram(df_plot, x='difficulty', nbins=30, title='Difficulty Distribution')
+# fig_hist3.update_layout(
+#     width=800
+# )
 
 # Correlation Heatmap Between Workload, Rating and Difficulty
 fig_corr = px.imshow(df[['rating', 'difficulty', 'workload']].corr(), text_auto = True, title = 'Correlation')
@@ -162,7 +163,7 @@ timezone_string = datetime.now().astimezone().tzname()
 # Generate HTML File with Updated Time and Treemap
 with open('omscs_courses_rating_difficulty.html', 'a') as f:
     f.truncate(0) # clear file if something is already written on it
-    title = "<h1>Gerogia Tech OMSCS</h1><h2>Summary of Course Difficulty and Rating</h2>"
+    title = "<h1>Gerogia Tech OMSCS Course Reviews Dashboard</h1><h2>Summary of Course Difficulty and Rating</h2>"
     updated = "<h3>Last updated: " + dt_string + " (Timezone: " + timezone_string + ")</h3>"
     description = "The data is pulled from <a href='https://www.omscentral.com/'>OMSCentral</a> daily via a GitHub Actions script to update the summary information in this page.<br><br>"
     credits = "Credits to <a href='https://www.omscentral.com/'>OMSCentral</a> for the information, review and rating of the courses. I do not own any of this data."
