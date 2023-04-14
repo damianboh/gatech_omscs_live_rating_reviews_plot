@@ -1,8 +1,7 @@
-# libraries for webscraping, parsing and getting stock data
+# libraries for webscraping, parsing and getting data
 from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
-import yfinance as yf
-import time
+import json
 
 # for plotting and data manipulation
 import pandas as pd
@@ -10,7 +9,7 @@ import matplotlib.pyplot as plt
 import plotly
 import plotly.express as px
 
-# for getting current date and time to print 'last updated'
+# for getting current date and time to print 'last updated' in webpage
 from datetime import datetime
 
 # Filter data with minimum review count of 5
@@ -106,6 +105,34 @@ fig_scatter2.update_layout(
     )
 )
 
+# Treemap Plot of Course Rating
+# group data into department at the highest level, breaks it down into courses
+# the 'values' parameter uses the value of the column to determine the relative size of each box in the chart
+# the color of the chart follows the course rating
+df_plot['label'] = df_plot['tag'] + '<br><br>' + df_plot['rating'].apply(lambda x:str(round(x, 3)))
+fig_treemap1 = px.treemap(df_plot, path=[px.Constant("OMSCS Course Rating"), 'dept', 'label'], values='reviewCount',
+                  color='rating', hover_data=['name', 'difficulty'],
+                  color_continuous_scale=['#FF0000', "#000000", '#00FF00'])
+
+fig_treemap1.update_traces(textposition="middle center")
+fig_treemap1.update_layout(margin = dict(t=30, l=10, r=10, b=10), font_size=20)
+
+
+# Treemap Plot of Course Difficulty
+# group data into department at the highest level, breaks it down into courses
+# the 'values' parameter uses the value of the column to determine the relative size of each box in the chart
+# the color of the chart follows the course difficulty
+df_plot['label'] = df_plot['tag'] + '<br><br>' + df_plot['difficulty'].apply(lambda x:str(round(x, 3)))
+fig_treemap2 = px.treemap(df_plot, path=[px.Constant("OMSCS Course Difficulty"), 'dept', 'label'], values='reviewCount',
+                  color='difficulty', hover_data=['name', 'rating'],
+                  color_continuous_scale=['#FF0000', "#000000", '#00FF00'])
+
+fig_treemap2.update_traces(textposition="middle center")
+fig_treemap2.update_layout(margin = dict(t=30, l=10, r=10, b=10), font_size=20)
+
+fig_treemap2.show()
+
+
 
 # Histogram Plots to Show Distributions of Workload, Rating and Difficulty
 fig_hist1 = px.histogram(df_plot, x='workload', nbins=30, title='Workload Distribution')
@@ -127,22 +154,6 @@ fig_hist3.update_layout(
 fig_corr = px.imshow(df[['rating', 'difficulty', 'workload']].corr(), text_auto = True, title = 'Correlation')
 
 
-# Generate the Treemap Plot
-# group data into sectors at the highest level, breaks it down into industry, and then ticker, specified in the 'path' parameter
-# the 'values' parameter uses the value of the column to determine the relative size of each box in the chart
-# the color of the chart follows the sentiment score
-# when the mouse is hovered over each box in the chart, the negative, neutral, positive and overall sentiment scores will all be shown
-# the color is red (#ff0000) for negative sentiment scores, black (#000000) for 0 sentiment score and green (#00FF00) for positive sentiment scores
-fig = px.treemap(df, path=[px.Constant("Dow Jones"), 'Sector', 'Industry', 'Symbol'], values='Market Cap',
-                  color='Sentiment Score', hover_data=['Company', 'Negative', 'Neutral', 'Positive', 'Sentiment Score'],
-                  color_continuous_scale=['#FF0000', "#000000", '#00FF00'],
-                  color_continuous_midpoint=0)
-
-fig.data[0].customdata = df[['Company', 'Negative', 'Neutral', 'Positive', 'Sentiment Score']].round(3) # round to 3 decimal places
-fig.data[0].texttemplate = "%{label}<br>%{customdata[4]}"
-
-fig.update_traces(textposition="middle center")
-fig.update_layout(margin = dict(t=30, l=10, r=10, b=10), font_size=20)
 
 # Get current date, time and timezone to print to the html page
 now = datetime.now()
@@ -150,13 +161,23 @@ dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
 timezone_string = datetime.now().astimezone().tzname()
 
 # Generate HTML File with Updated Time and Treemap
-with open('dow_jones_live_sentiment.html', 'a') as f:
+with open('omscs_courses_rating_difficulty.html', 'a') as f:
     f.truncate(0) # clear file if something is already written on it
-    title = "<h1>Dow Jones Stock Sentiment Dashboard</h1>"
-    updated = "<h2>Last updated: " + dt_string + " (Timezone: " + timezone_string + ")</h2>"
-    description = "This dashboard is updated every half an hour with sentiment analysis performed on latest scraped news headlines from the FinViz website.<br><br>"
-    code = """<a href="https://medium.com/datadriveninvestor/use-github-actions-to-create-a-live-stock-sentiment-dashboard-online-580a08457650">Explanatory Article</a> | <a href="https://github.com/damianboh/dow_jones_live_stock_sentiment_treemap">Source Code</a>"""
+    title = "<h1>Gerogia Tech OMSCS</h1><h2>Summary of Course Difficulty and Rating</h2>"
+    updated = "<h3>Last updated: " + dt_string + " (Timezone: " + timezone_string + ")</h3>"
+    description = "The data is pulled from <a href='https://www.omscentral.com/'>OMSCentral</a> daily via a GitHub Actions script to update the summary information in this page.<br><br>"
+    credits = "Credits to <a href='https://www.omscentral.com/'>OMSCentral</a> for the information, review and rating of the courses. I do not own any of this data."
+    subtitle = "<h3>Explanation and Source Code</h3>"
+    code = """<a href="https://medium.com/datadriveninvestor/use-github-actions-to-create-a-live-stock-sentiment-dashboard-online-580a08457650">Explanatory Article</a> | <a href="https://github.com/damianboh/gatech_omscs_live_rating_reviews_plot">Source Code</a>"""
     author = """ | Created by Damian Boh, check out my <a href="https://damianboh.github.io/">GitHub Page</a>"""
-    f.write(title + updated + description + code + author)
-    f.write(fig.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
+   
+    f.write(title + updated + description + credits + subtitle + code + author)
+    f.write(fig_scatter1.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
+    f.write(fig_scatter2.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
+    f.write(fig_treemap1.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
+    f.write(fig_treemap2.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
+    f.write(fig_hist1.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
+    f.write(fig_hist2.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
+    f.write(fig_hist3.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
+    f.write(fig_corr.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
 
