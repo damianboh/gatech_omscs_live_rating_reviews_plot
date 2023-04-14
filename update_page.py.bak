@@ -135,20 +135,21 @@ fig_treemap2.show()
 
 
 # Histogram Plots to Show Distributions of Workload, Rating and Difficulty
-fig_hist1 = px.histogram(df_plot, x='workload', nbins=30, title='Workload Distribution')
-fig_hist1.update_layout(
-    width=800
-)
+# (feel free to uncomment to include these plots)
+# fig_hist1 = px.histogram(df_plot, x='workload', nbins=30, title='Workload Distribution')
+# fig_hist1.update_layout(
+#     width=800
+# )
 
-fig_hist2 = px.histogram(df_plot, x='rating', nbins=30, title='Rating Distribution')
-fig_hist2.update_layout(
-    width=800
-)
+# fig_hist2 = px.histogram(df_plot, x='rating', nbins=30, title='Rating Distribution')
+# fig_hist2.update_layout(
+#     width=800
+# )
 
-fig_hist3 = px.histogram(df_plot, x='difficulty', nbins=30, title='Difficulty Distribution')
-fig_hist3.update_layout(
-    width=800
-)
+# fig_hist3 = px.histogram(df_plot, x='difficulty', nbins=30, title='Difficulty Distribution')
+# fig_hist3.update_layout(
+#     width=800
+# )
 
 # Correlation Heatmap Between Workload, Rating and Difficulty
 fig_corr = px.imshow(df[['rating', 'difficulty', 'workload']].corr(), text_auto = True, title = 'Correlation')
@@ -175,8 +176,10 @@ with open('omscs_courses_rating_difficulty.html', 'a') as f:
     f.write(fig_scatter2.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
     f.write(fig_treemap1.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
     f.write(fig_treemap2.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
-    f.write(fig_hist1.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
-    f.write(fig_hist2.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
-    f.write(fig_hist3.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
+
+    # if below lines are uncommmented, remember to uncomment the lines above that creates these plots
+#   f.write(fig_hist1.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
+#   f.write(fig_hist2.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
+#   f.write(fig_hist3.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
     f.write(fig_corr.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
 
