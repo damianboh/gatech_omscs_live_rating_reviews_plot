@@ -29,7 +29,7 @@ jobs:
           git clone https://github.com/damianboh/damianboh.github.io.git/ 
           cp omscs_courses_rating_difficulty.html damianboh.github.io/omscs_courses_rating_difficulty.html 
           cd damianboh.github.io 
-          git add dow_jones_live_sentiment.html
+          git add omscs_courses_rating_difficulty.html
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git commit -m 'refresh dow jones sentiment page'        
