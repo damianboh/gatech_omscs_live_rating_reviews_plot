@@ -1,6 +1,6 @@
 # Gerogia Tech OMSCS: Summary of Course Difficulty and Rating
 
-This project keeps an updated dashboard of stock sentiments in the Dow Jones Index, deployed here: https://damianboh.github.io/omscs_courses_rating_difficulty.html
+This project keeps an updated dashboard of Course Difficulty and Rating of Gatech OMSCS courses, deployed here: https://damianboh.github.io/omscs_courses_rating_difficulty.html
 
 A workflow is configured in GitHub actions to install necessary libraries from requirements.txt, run the Python script "update_page.py" that scrapes OMS Central website for course ratings and difficulty and generate the updated html page.
 
