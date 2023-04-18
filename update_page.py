@@ -58,7 +58,7 @@ for i, row in raw_df.iterrows():
             raw_df.at[i,'tag'] = row['tags'][0]  
 
 
-df = raw_df[raw_df['reviewCount'] > 0]
+df = raw_df[raw_df['reviewCount'] >= min_review_count]
 
 # More data cleaning
 # distributed computing has a ridiculously high amt of workload
@@ -66,10 +66,8 @@ df = raw_df[raw_df['reviewCount'] > 0]
 df.loc[df["tag"] == "DC", 'workload'] = 0 
 df.loc[df["tag"] == "DC", 'workload'] = df["workload"].max()
 
-df = df[['name', 'tag', 'dept', 'code', 'description', 'reviewCount', 'rating', 'difficulty', 'workload']]
+df_plot = df[['name', 'tag', 'dept', 'code', 'description', 'reviewCount', 'rating', 'difficulty', 'workload']]
 
-# Filter data with minimum review count specified above
-df_plot = df[df['reviewCount'] >= min_review_count]
 
 # Generate Scatter Plots
 # OMSCS Course Rating and Difficulty Plot (size = Review Count, color = Workload)
@@ -177,7 +175,7 @@ with open('omscs_courses_rating_difficulty.html', 'a') as f:
     f.write(fig_treemap1.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
     f.write(fig_treemap2.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
 
-    # if below lines are uncommmented, remember to uncomment the lines above that creates these plots
+#   if below lines are uncommmented, remember to uncomment the lines above that creates these plots
 #   f.write(fig_hist1.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
 #   f.write(fig_hist2.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
 #   f.write(fig_hist3.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
