@@ -166,7 +166,7 @@ with open('omscs_courses_rating_difficulty.html', 'a') as f:
     description = "The data is pulled from <a href='https://www.omscentral.com/'>OMSCentral</a> daily via a GitHub Actions script to update the summary information in this page.<br><br>"
     credits = "Credits to <a href='https://www.omscentral.com/'>OMSCentral</a> for the information, review and rating of the courses. I do not own any of this data."
     subtitle = "<h3>Explanation and Source Code</h3>"
-    code = """<a href="https://medium.com/datadriveninvestor/use-github-actions-to-create-a-live-stock-sentiment-dashboard-online-580a08457650">Explanatory Article</a> | <a href="https://github.com/damianboh/gatech_omscs_live_rating_reviews_plot">Source Code</a>"""
+    code = """<a href="https://medium.com/@bohmian/675a912aceed?source=friends_link&sk=8d643a878398e6352b9d0cdc82661a19">Explanatory Article</a> | <a href="https://github.com/damianboh/gatech_omscs_live_rating_reviews_plot">Source Code</a>"""
     author = """ | Created by Damian Boh, check out my <a href="https://damianboh.github.io/">GitHub Page</a>"""
    
     f.write(title + updated + description + credits + subtitle + code + author)
