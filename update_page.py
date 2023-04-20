@@ -155,30 +155,32 @@ fig_corr = px.imshow(df[['rating', 'difficulty', 'workload']].corr(), text_auto 
 
 # Get current date, time and timezone to print to the html page
 now = datetime.now()
-dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+dt_string = now.strftime("%m/%d/%Y %I:%M:%S %p")
 timezone_string = datetime.now().astimezone().tzname()
 
 # Generate HTML File with Updated Time and Treemap
 with open('omscs_courses_rating_difficulty.html', 'a') as f:
     f.truncate(0) # clear file if something is already written on it
-    title = "<h1>Georgia Tech OMSCS Course Reviews Dashboard</h1><h2>Summary of Course Difficulty and Rating</h2>"
-    updated = "<h3>Last updated: " + dt_string + " (Timezone: " + timezone_string + ")</h3>"
-    description = "The data is pulled from <a href='https://www.omscentral.com/'>OMSCentral</a> daily via a GitHub Actions script to update the summary information in this page.<br><br>"
+    title = "<h1>Georgia Tech OMSCS</h1><h2>Summary of Course Difficulty and Rating</h2>"
+    updated = "<h3>Last updated: <span id='timestring'></span>"
+    # GitHub Actions server timezone may not be at the same timezone of person opening the page on browser
+    # hence Javascript code is written below to convert to client timezone before printing it on the page
+    current_time = "<script>var date = new Date('" + dt_string + " UTC'); document.getElementById('timestring').innerHTML += date.toString()</script>"
+    description = "<br><br>The data is pulled from <a href='https://www.omscentral.com/'>OMSCentral</a> daily via a GitHub ActioSsns script to update the summary information in this page.<br><br>"
     credits = "Credits to <a href='https://www.omscentral.com/'>OMSCentral</a> for the information, review and rating of the courses. I do not own any of this data."
     subtitle = "<h3>Explanation and Source Code</h3>"
-    code = """<a href="https://medium.com/@bohmian/675a912aceed?source=friends_link&sk=8d643a878398e6352b9d0cdc82661a19">Explanatory Article</a> | <a href="https://github.com/damianboh/gatech_omscs_live_rating_reviews_plot">Source Code</a>"""
+    code = """<a href="https://medium.com/datadriveninvestor/use-github-actions-to-create-a-live-stock-sentiment-dashboard-online-580a08457650">Explanatory Article</a> | <a href="https://github.com/damianboh/gatech_omscs_live_rating_reviews_plot">Source Code</a>"""
     author = """ | Created by Damian Boh, check out my <a href="https://damianboh.github.io/">GitHub Page</a>"""
    
-    f.write(title + updated + description + credits + subtitle + code + author)
+    f.write(title + updated + current_time + description + credits + subtitle + code + author)
     f.write(fig_scatter1.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
     f.write(fig_scatter2.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
     f.write(fig_treemap1.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
     f.write(fig_treemap2.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
-
-#   if below lines are uncommmented, remember to uncomment the lines above that creates these plots
-#   f.write(fig_hist1.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
-#   f.write(fig_hist2.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
-#   f.write(fig_hist3.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
-
+    
+    # if below lines are uncommmented, remember to uncomment the lines above that creates these plots
+    # f.write(fig_hist1.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
+    # f.write(fig_hist2.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
+    # f.write(fig_hist3.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
+    
     f.write(fig_corr.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
-
