@@ -162,26 +162,22 @@ timezone_string = datetime.now().astimezone().tzname()
 with open('omscs_courses_rating_difficulty.html', 'a') as f:
     f.truncate(0) # clear file if something is already written on it
     title = "<h1>Georgia Tech OMSCS</h1><h2>Summary of Course Difficulty and Rating</h2>"
-    updated = "<h3>Last updated: <span id='timestring'></span>"
+    updated = "<h3>Last updated: <span id='timestring'></span>"       
+    # GitHub Actions server timezone may not be at the same timezone of person opening the page on browser
+    # hence Javascript code is written below to convert to client timezone before printing it on
     current_time = "<script>var date = new Date('" + dt_string + " " + timezone_string + "'); document.getElementById('timestring').innerHTML += date.toString()</script>"
     description = "<br><br>The data is pulled from <a href='https://www.omscentral.com/'>OMSCentral</a> daily via a GitHub ActioSsns script to update the summary information in this page.<br><br>"
     credits = "Credits to <a href='https://www.omscentral.com/'>OMSCentral</a> for the information, review and rating of the courses. I do not own any of this data."
     subtitle = "<h3>Explanation and Source Code</h3>"
     code = """<a href="https://medium.com/datadriveninvestor/use-github-actions-to-create-a-live-stock-sentiment-dashboard-online-580a08457650">Explanatory Article</a> | <a href="https://github.com/damianboh/gatech_omscs_live_rating_reviews_plot">Source Code</a>"""
     author = """ | Created by Damian Boh, check out my <a href="https://damianboh.github.io/">GitHub Page</a>"""
-   
+    
     f.write(title + updated + current_time + description + credits + subtitle + code + author)
     f.write(fig_scatter1.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
     f.write(fig_scatter2.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
     f.write(fig_treemap1.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
     f.write(fig_treemap2.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
     
-    # uncomment below to include the histograms also
-    # f.write(fig_hist1.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
-    # f.write(fig_hist2.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
-    # f.write(fig_hist3.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
-    
-    f.write(fig_corr.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
     # if below lines are uncommmented, remember to uncomment the lines above that creates these plots
     # f.write(fig_hist1.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
     # f.write(fig_hist2.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
