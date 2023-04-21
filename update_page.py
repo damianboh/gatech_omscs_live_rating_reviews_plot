@@ -166,10 +166,10 @@ with open('omscs_courses_rating_difficulty.html', 'a') as f:
     # GitHub Actions server timezone may not be at the same timezone of person opening the page on browser
     # hence Javascript code is written below to convert to client timezone before printing it on
     current_time = "<script>var date = new Date('" + dt_string + " " + timezone_string + "'); document.getElementById('timestring').innerHTML += date.toString()</script>"
-    description = "The data is pulled from <a href='https://www.omscentral.com/'>OMSCentral</a> daily via a GitHub ActioSsns script to update the summary information in this page.<br><br>"
+    description = "The data is pulled from <a href='https://www.omscentral.com/'>OMSCentral</a> daily via a GitHub Actions script to update the summary information in this page.<br><br>"
     credits = "Credits to <a href='https://www.omscentral.com/'>OMSCentral</a> for the information, review and rating of the courses. I do not own any of this data."
     subtitle = "<h3>Explanation and Source Code</h3>"
-    code = """<a href="https://medium.com/datadriveninvestor/use-github-actions-to-create-a-live-stock-sentiment-dashboard-online-580a08457650">Explanatory Article</a> | <a href="https://github.com/damianboh/gatech_omscs_live_rating_reviews_plot">Source Code</a>"""
+    code = """<a href="https://medium.datadriveninvestor.com/use-python-to-analyze-georgia-tech-omscs-course-ratings-and-reviews-675a912aceed">Explanatory Article</a> | <a href="https://github.com/damianboh/gatech_omscs_live_rating_reviews_plot">Source Code</a>"""
     author = """ | Created by Damian Boh, check out my <a href="https://damianboh.github.io/">GitHub Page</a>"""
     
     f.write(title + updated + current_time + description + credits + subtitle + code + author)
