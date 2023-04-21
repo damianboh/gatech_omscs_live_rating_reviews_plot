@@ -1,11 +1,11 @@
 name: Get Courses Rating and Difficulty and update GitHub page
 
 on:
-    push:
-        branches:
-            - main
-    schedule:
-        - cron: "*/30 * * * *" # runs every half hour
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "*/30 * * * *" # runs every half hour
     
 jobs:
   refresh_page:
