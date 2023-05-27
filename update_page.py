@@ -170,8 +170,7 @@ with open('omscs_courses_rating_difficulty.html', 'a') as f:
     credits = "Credits to <a href='https://www.omscentral.com/'>OMSCentral</a> for the information, review and rating of the courses. I do not own any of this data."
     subtitle = "<h3>Explanation and Source Code</h3>"
     code = """<a href="https://medium.datadriveninvestor.com/use-python-to-analyze-georgia-tech-omscs-course-ratings-and-reviews-675a912aceed">Explanatory Article</a> | <a href="https://github.com/damianboh/gatech_omscs_live_rating_reviews_plot">Source Code</a>"""
-    author = """ | Created by Damian Boh, check out my <a href="https://damianboh.github.io/">GitHub Page</a>"""
-    
+    author = """ | Created by Damian Boh, check out my <a href="https://damianboh.github.io/">GitHub Page</a> <br><br> <a href="https://www.buymeacoffee.com/bohmian" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 45px !important;width: 152px !important;" ></a>"""
     f.write(title + updated + current_time + description + credits + subtitle + code + author)
     f.write(fig_scatter1.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
     f.write(fig_scatter2.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
