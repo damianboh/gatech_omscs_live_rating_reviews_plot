@@ -9,8 +9,12 @@ import matplotlib.pyplot as plt
 import plotly
 import plotly.express as px
 
+# for finding review URL
+from slugify import slugify
+
 # for getting current date and time to print 'last updated' in webpage
 from datetime import datetime
+
 
 # Filter data with minimum review count of 5
 min_review_count = 5
@@ -67,9 +71,118 @@ df.loc[df["tag"] == "DC", 'workload'] = 0
 df.loc[df["tag"] == "DC", 'workload'] = df["workload"].max()
 
 df_plot = df[['name', 'tag', 'dept', 'code', 'description', 'reviewCount', 'rating', 'difficulty', 'workload']]
+df_plot['reviewsURL'] = "https://www.omscentral.com/courses/" + df_plot['name'].apply(slugify) + "/reviews"
+df_plot['semester'] = 'All'
 
+course_reviews_df_all = pd.DataFrame()
+
+# For Each Course, Scrape All Review Info and Group Rating, Difficulty, Workload by Semester
+for i in range(len(df_plot)):
+    name = df_plot['name'].iloc[i]
+    url = df_plot['reviewsURL'].iloc[i]
+    req = Request(url=url,headers={'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:20.0) Gecko/20100101 Firefox/20.0'})
+
+    try:
+        response = urlopen(req)   
+    except:
+        time.sleep(10) # if there is an error and request is blocked, do it more slowly by waiting for 10 seconds before requesting again
+        response = urlopen(req)  
+
+    # Read the contents of the file into 'html'
+    html = BeautifulSoup(response)
+
+    raw_list = html.find_all("li")
+    course_reviews = []
+
+    for item in raw_list:
+        spans = item.find_all("span", {'class' : 'capitalize'})
+        if (spans):
+            semester = spans[0].text.title()
+            if (semester != "Unknown Semester"):
+                infos = item.find_all("span", {'class' : 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800'})
+                for info in infos:
+                    info_text = info.text
+                    if "Rating" in info_text:
+                        rating = info_text.split(' / ')[0][8:]
+                    if "Difficulty" in info_text:
+                        difficulty = info_text.split(' / ')[0][12:]
+                    if "Workload" in info_text:
+                        workload = info_text.split(' hours / ')[0][10:]
+                if ((rating.isdigit()) & (difficulty.isdigit()) & (workload.isdigit())):
+                    item_dict = {"name": name, "semester": semester, "rating": float(rating), "difficulty": float(difficulty), "workload": float(workload)}
+                    course_reviews.append(item_dict) 
+    course_reviews_df = pd.DataFrame(course_reviews)          
+    course_reviews_df_grouped = course_reviews_df.groupby(["name", "semester"]).mean()
+    course_reviews_df_grouped['reviewCount'] = course_reviews_df.groupby(["name", "semester"])['rating'].count()
+    course_reviews_df_all = pd.concat([course_reviews_df_all, course_reviews_df_grouped])
+    print(name)
+    
+df_all = course_reviews_df_all.reset_index()
+df_all_tagged = df_all.merge(df_plot[['name', 'tag', 'dept', 'code', 'description']], on='name', how='outer')
+df_plot_semester = pd.concat([df_all_tagged, df_plot])
+df_plot_semester['semester period'] = df_plot_semester['semester'].apply(lambda x: x.split(' ')[0])
+df_plot_semester['year'] = df_plot_semester['semester'].apply(lambda x: x.split(' ')[-1])
+df_plot_semester['semester period'] = pd.Categorical(df_plot_semester['semester period'], ['Spring', 'Summer', 'Fall', 'All'])
+df_plot_semester = df_plot_semester.sort_values(['semester period', 'year'])
+df_plot_semester['semester'] = df_plot_semester['semester period'].astype(str) + ' ' + df_plot_semester['year']
+df_plot_semester_final = df_plot_semester[df_plot_semester['semester period']!='All']
 
 # Generate Scatter Plots
+# [With Semester Animation] OMSCS Course Rating and Difficulty Plot (size = Review Count, color = Workload)
+x_col = "rating"
+y_col = "difficulty"
+size = "reviewCount"
+color = "workload"
+
+min_x = df_plot_semester_final[x_col].min() - 0.2
+max_x = df_plot_semester_final[x_col].max() + 0.2
+min_y = df_plot_semester_final[y_col].min() - 0.2
+max_y = df_plot_semester_final[y_col].max() - 0.2
+
+fig_semester1 = px.scatter(df_plot_semester_final, x=x_col, y=y_col, text='tag', animation_frame="semester", animation_group="name",
+           size=size, color=color,  size_max=20, hover_data=['name', 'reviewCount'], range_x=[min_x, max_x], range_y=[min_y, max_y])
+fig_semester1.add_vline(x=df_plot["difficulty"].mean(), line_width=0.5, annotation_text = 'Mean Difficulty')
+fig_semester1.add_hline(y=df_plot["rating"].mean(), line_width=0.5, annotation_text = 'Mean Rating')
+
+fig_semester1.update_traces(textposition='top center')
+fig_semester1.update_layout(
+    title="OMSCS Course Rating and Difficulty (size = Review Count, color = Workload)",
+    xaxis_title="Difficulty",
+    yaxis_title="Rating",
+    height=800,
+    font=dict(
+        size=10
+    )
+)
+
+# [With Semester Animation] OMSCS Course Workload and Difficulty Plot (size = Review Count, color = Rating)
+x_col = "difficulty"
+y_col = "workload"
+size = "reviewCount"
+color = "rating"
+
+min_x = df_plot_semester_final[x_col].min() - 0.2
+max_x = df_plot_semester_final[x_col].max() + 0.2
+min_y = df_plot_semester_final[y_col].min() - 0.2
+max_y = df_plot_semester_final[y_col].max() - 0.2
+
+fig_semester2 = px.scatter(df_plot_semester_final, x=x_col, y=y_col, text='tag', animation_frame="semester", animation_group="name",
+           size=size, color=color,  size_max=20, hover_data=['name', 'reviewCount'], range_x=[min_x, max_x], range_y=[min_y, max_y])
+fig_semester2.add_vline(x=df_plot["difficulty"].mean(), line_width=0.5, annotation_text = 'Mean Difficulty')
+fig_semester2.add_hline(y=df_plot["rating"].mean(), line_width=0.5, annotation_text = 'Mean Rating')
+
+fig_semester2.update_traces(textposition='top center')
+fig_semester2.update_layout(
+    title="OMSCS Course Workload and Difficulty (size = Review Count, color = Rating)",
+    xaxis_title="Difficulty",
+    yaxis_title="Rating",
+    height=800,
+    font=dict(
+        size=10
+    )
+)
+
+
 # OMSCS Course Rating and Difficulty Plot (size = Review Count, color = Workload)
 fig_scatter1 = px.scatter(df_plot, x="difficulty", y="rating", 
                  hover_data=['name', 'reviewCount'], text='tag', size='reviewCount', color='workload')
@@ -162,6 +275,7 @@ timezone_string = datetime.now().astimezone().tzname()
 with open('omscs_courses_rating_difficulty.html', 'a') as f:
     f.truncate(0) # clear file if something is already written on it
     title = "<h1>Georgia Tech OMSCS</h1><h2>Summary of Course Difficulty and Rating</h2>"
+    semester_title = "<h2>Plots by Semester</h2> <p>Slide the slider below each plot to see the data for each semester.</p>"
     updated = "<h3>Last updated: <span id='timestring'></span></h3>"       
     # GitHub Actions server timezone may not be at the same timezone of person opening the page on browser
     # hence Javascript code is written below to convert to client timezone before printing it on
@@ -177,6 +291,10 @@ with open('omscs_courses_rating_difficulty.html', 'a') as f:
     f.write(fig_treemap1.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
     f.write(fig_treemap2.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
     
+    f.write(semester_title)    
+    f.write(fig_semester1.to_html(full_html=False, include_plotlyjs='cdn', auto_play=False)) # write the fig created above into the html file
+    f.write(fig_semester2.to_html(full_html=False, include_plotlyjs='cdn', auto_play=False)) # write the fig created above into the html file
+          
     # if below lines are uncommmented, remember to uncomment the lines above that creates these plots
     # f.write(fig_hist1.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
     # f.write(fig_hist2.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
