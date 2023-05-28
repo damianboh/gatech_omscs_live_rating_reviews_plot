@@ -3,3 +3,4 @@ urllib3
 plotly
 matplotlib
 pandas
+slugify
