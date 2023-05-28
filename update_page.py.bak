@@ -169,7 +169,7 @@ max_y = df_plot_semester_final[y_col].max() - 0.2
 fig_semester2 = px.scatter(df_plot_semester_final, x=x_col, y=y_col, text='tag', animation_frame="semester", animation_group="name",
            size=size, color=color,  size_max=20, hover_data=['name', 'reviewCount'], range_x=[min_x, max_x], range_y=[min_y, max_y])
 fig_semester2.add_vline(x=df_plot["difficulty"].mean(), line_width=0.5, annotation_text = 'Mean Difficulty')
-fig_semester2.add_hline(y=df_plot["rating"].mean(), line_width=0.5, annotation_text = 'Mean Rating')
+fig_semester2.add_hline(y=df_plot["workload"].mean(), line_width=0.5, annotation_text = 'Mean Workload')
 
 fig_semester2.update_traces(textposition='top center')
 fig_semester2.update_layout(
@@ -291,12 +291,10 @@ with open('omscs_courses_rating_difficulty.html', 'a') as f:
     f.write(fig_treemap1.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
     f.write(fig_treemap2.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
     
-     f.write(semester_title)    
+    f.write(semester_title)    
     f.write(fig_semester1.to_html(full_html=False, include_plotlyjs='cdn', auto_play=False)) # write the fig created above into the html file
     f.write(fig_semester2.to_html(full_html=False, include_plotlyjs='cdn', auto_play=False)) # write the fig created above into the html file
-  
-    
-    
+          
     # if below lines are uncommmented, remember to uncomment the lines above that creates these plots
     # f.write(fig_hist1.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file
     # f.write(fig_hist2.to_html(full_html=False, include_plotlyjs='cdn')) # write the fig created above into the html file

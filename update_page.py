@@ -169,18 +169,19 @@ max_y = df_plot_semester_final[y_col].max() - 0.2
 fig_semester2 = px.scatter(df_plot_semester_final, x=x_col, y=y_col, text='tag', animation_frame="semester", animation_group="name",
            size=size, color=color,  size_max=20, hover_data=['name', 'reviewCount'], range_x=[min_x, max_x], range_y=[min_y, max_y])
 fig_semester2.add_vline(x=df_plot["difficulty"].mean(), line_width=0.5, annotation_text = 'Mean Difficulty')
-fig_semester2.add_hline(y=df_plot["rating"].mean(), line_width=0.5, annotation_text = 'Mean Rating')
+fig_semester2.add_hline(y=df_plot["workload"].mean(), line_width=0.5, annotation_text = 'Mean Workload')
 
 fig_semester2.update_traces(textposition='top center')
 fig_semester2.update_layout(
     title="OMSCS Course Workload and Difficulty (size = Review Count, color = Rating)",
     xaxis_title="Difficulty",
-    yaxis_title="Rating",
+    yaxis_title="Workload",
     height=800,
     font=dict(
         size=10
     )
 )
+
 
 
 # OMSCS Course Rating and Difficulty Plot (size = Review Count, color = Workload)
