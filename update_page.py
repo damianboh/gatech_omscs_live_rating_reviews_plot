@@ -123,7 +123,7 @@ df_plot_semester = pd.concat([df_all_tagged, df_plot])
 df_plot_semester['semester period'] = df_plot_semester['semester'].apply(lambda x: x.split(' ')[0])
 df_plot_semester['year'] = df_plot_semester['semester'].apply(lambda x: x.split(' ')[-1])
 df_plot_semester['semester period'] = pd.Categorical(df_plot_semester['semester period'], ['Spring', 'Summer', 'Fall', 'All'])
-df_plot_semester = df_plot_semester.sort_values(['semester period', 'year'])
+df_plot_semester = df_plot_semester.sort_values(['year', 'semester period'])
 df_plot_semester['semester'] = df_plot_semester['semester period'].astype(str) + ' ' + df_plot_semester['year']
 df_plot_semester_final = df_plot_semester[df_plot_semester['semester period']!='All']
 

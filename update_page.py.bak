@@ -175,12 +175,13 @@ fig_semester2.update_traces(textposition='top center')
 fig_semester2.update_layout(
     title="OMSCS Course Workload and Difficulty (size = Review Count, color = Rating)",
     xaxis_title="Difficulty",
-    yaxis_title="Rating",
+    yaxis_title="Workload",
     height=800,
     font=dict(
         size=10
     )
 )
+
 
 
 # OMSCS Course Rating and Difficulty Plot (size = Review Count, color = Workload)
