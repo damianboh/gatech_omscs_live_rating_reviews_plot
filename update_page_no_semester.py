@@ -123,7 +123,7 @@ fig_treemap1.update_layout(margin = dict(t=30, l=10, r=10, b=10), font_size=20)
 df_plot['label'] = df_plot['tag'] + '<br><br>' + df_plot['difficulty'].apply(lambda x:str(round(x, 3)))
 fig_treemap2 = px.treemap(df_plot, path=[px.Constant("OMSCS Course Difficulty"), 'dept', 'label'], values='reviewCount',
                   color='difficulty', hover_data=['name', 'rating'],
-                  color_continuous_scale=['#FF0000', "#000000", '#00FF00'])
+                  color_continuous_scale=['#00FF00', "#000000", '#FF0000'])
 
 fig_treemap2.update_traces(textposition="middle center")
 fig_treemap2.update_layout(margin = dict(t=30, l=10, r=10, b=10), font_size=20)
